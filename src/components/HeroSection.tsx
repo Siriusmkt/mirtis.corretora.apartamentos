@@ -40,7 +40,6 @@ export function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [categoria, setCategoria] = useState<string>("todos");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [videoError, setVideoError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const count500 = useCounter(500, 2000, 0);
   const count12 = useCounter(12, 2000, 0);
@@ -54,6 +53,10 @@ export function HeroSection() {
     // Garantir que o vídeo tente carregar
     if (videoRef.current) {
       videoRef.current.load();
+      // Tentar reproduzir
+      videoRef.current.play().catch((error) => {
+        console.warn('Erro ao reproduzir vídeo automaticamente:', error);
+      });
     }
   }, []);
 
@@ -130,29 +133,36 @@ export function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Video */}
       <div className="absolute inset-0 z-0">
-        {!videoError ? (
-          <video
-            ref={videoRef}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            className="w-full h-full object-cover object-center"
-            style={{ minWidth: '100%', minHeight: '100%' }}
-            onError={() => {
-              console.error('Erro ao carregar vídeo de fundo');
-              setVideoError(true);
-            }}
-            onLoadedData={() => {
-              console.log('Vídeo de fundo carregado com sucesso');
-            }}
-          >
-            <source src="/videos/Cria_um_video_202512111740.mp4" type="video/mp4" />
-          </video>
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-[#001F3F] via-[#003366] to-[#001F3F]" />
-        )}
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="w-full h-full object-cover object-center"
+          style={{ minWidth: '100%', minHeight: '100%' }}
+          onError={(e) => {
+            console.error('Erro ao carregar vídeo de fundo:', e);
+            const video = e.currentTarget;
+            console.error('Vídeo src:', video.src);
+            console.error('Vídeo networkState:', video.networkState);
+            console.error('Vídeo error:', video.error);
+            // Não definir videoError para manter tentando carregar
+          }}
+          onLoadedData={() => {
+            console.log('Vídeo de fundo carregado com sucesso');
+          }}
+          onCanPlay={() => {
+            console.log('Vídeo pode ser reproduzido');
+            if (videoRef.current) {
+              videoRef.current.play().catch(console.warn);
+            }
+          }}
+        >
+          <source src="/videos/Cria_um_video_202512111740.mp4" type="video/mp4" />
+          Seu navegador não suporta vídeos HTML5.
+        </video>
         <div className="absolute inset-0 hero-gradient" />
       </div>
 
