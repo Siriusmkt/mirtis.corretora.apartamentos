@@ -142,39 +142,41 @@ export function HeroSection() {
           muted
           playsInline
           preload="auto"
-          webkit-playsinline="true"
-          x5-playsinline="true"
           className="w-full h-full object-cover object-center"
           style={{ 
-            minWidth: '100%', 
-            minHeight: '100%',
             position: 'absolute',
             top: 0,
             left: 0,
             width: '100%',
-            height: '100%'
+            height: '100%',
+            minWidth: '100%',
+            minHeight: '100%',
+            zIndex: 0
           }}
           onError={(e) => {
-            console.error('Erro ao carregar vídeo:', e);
+            console.error('❌ Erro ao carregar vídeo:', e);
             const video = e.currentTarget;
             console.error('Vídeo src:', video.src);
             console.error('Vídeo networkState:', video.networkState);
+            console.error('Vídeo error code:', video.error?.code);
           }}
           onLoadedData={() => {
-            console.log('Vídeo carregado com sucesso');
+            console.log('✅ Vídeo carregado com sucesso!');
             if (videoRef.current) {
               videoRef.current.play().catch((err) => {
-                console.warn('Erro ao reproduzir:', err);
+                console.warn('⚠️ Erro ao reproduzir:', err);
               });
             }
           }}
           onCanPlay={() => {
+            console.log('✅ Vídeo pode ser reproduzido');
             if (videoRef.current) {
               videoRef.current.play().catch(() => {});
             }
           }}
         >
           <source src="/Cria_um_video_202512111740.mp4" type="video/mp4" />
+          Seu navegador não suporta vídeos HTML5.
         </video>
         <div className="absolute inset-0 hero-gradient" />
       </div>
