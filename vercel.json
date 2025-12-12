@@ -3,15 +3,25 @@
   "outputDirectory": "dist",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
+  "framework": null,
   "rewrites": [
     {
-      "source": "/((?!assets|videos|images|pdfs|favicon.ico|robots.txt|placeholder.svg|Cria_um_video_202512111740\\.mp4|.*\\.(mp4|pdf|png|jpg|jpeg|svg|ico|js|css|woff|woff2|ttf|eot)).*)",
+      "source": "/((?!assets|videos|images|pdfs|favicon.ico|robots.txt|placeholder.svg|Cria_um_video_202512111740\\.mp4|.*\\.(mp4|pdf|png|jpg|jpeg|svg|ico|js|css|woff|woff2|ttf|eot|webm)).*)",
       "destination": "/index.html"
     }
   ],
   "headers": [
     {
       "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*\\.(mp4|pdf))",
       "headers": [
         {
           "key": "Cache-Control",

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search, MapPin, Building, Home, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,12 +40,26 @@ export function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [categoria, setCategoria] = useState<string>("todos");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const videoRef = useRef<HTMLVideoElement>(null);
   const count500 = useCounter(500, 2000, 0);
   const count12 = useCounter(12, 2000, 0);
   const count98 = useCounter(98, 2000, 0);
 
   useEffect(() => {
     setIsVisible(true);
+  }, []);
+
+  useEffect(() => {
+    // Garantir que o vídeo carregue e reproduza
+    if (videoRef.current) {
+      videoRef.current.load();
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Ignorar erros de autoplay
+        });
+      }
+    }
   }, []);
 
   // Busca em tempo real
@@ -119,8 +133,29 @@ export function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background - Gradiente azul */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#001F3F] via-[#003366] to-[#001F3F]">
+      {/* Background Video */}
+      <div className="absolute inset-0 z-0">
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="w-full h-full object-cover object-center"
+          style={{ minWidth: '100%', minHeight: '100%' }}
+          onError={(e) => {
+            console.error('Erro ao carregar vídeo:', e);
+          }}
+          onLoadedData={() => {
+            console.log('Vídeo carregado com sucesso');
+            if (videoRef.current) {
+              videoRef.current.play().catch(() => {});
+            }
+          }}
+        >
+          <source src="/Cria_um_video_202512111740.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 hero-gradient" />
       </div>
 
