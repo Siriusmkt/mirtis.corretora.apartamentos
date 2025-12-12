@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Search, MapPin, Building, Home, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,24 +40,12 @@ export function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [categoria, setCategoria] = useState<string>("todos");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const videoRef = useRef<HTMLVideoElement>(null);
   const count500 = useCounter(500, 2000, 0);
   const count12 = useCounter(12, 2000, 0);
   const count98 = useCounter(98, 2000, 0);
 
   useEffect(() => {
     setIsVisible(true);
-  }, []);
-
-  useEffect(() => {
-    // Garantir que o vídeo tente carregar
-    if (videoRef.current) {
-      videoRef.current.load();
-      // Tentar reproduzir
-      videoRef.current.play().catch((error) => {
-        console.warn('Erro ao reproduzir vídeo automaticamente:', error);
-      });
-    }
   }, []);
 
   // Busca em tempo real
@@ -131,38 +119,8 @@ export function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Video */}
-      <div className="absolute inset-0 z-0">
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          className="w-full h-full object-cover object-center"
-          style={{ minWidth: '100%', minHeight: '100%' }}
-          onError={(e) => {
-            console.error('Erro ao carregar vídeo de fundo:', e);
-            const video = e.currentTarget;
-            console.error('Vídeo src:', video.src);
-            console.error('Vídeo networkState:', video.networkState);
-            console.error('Vídeo error:', video.error);
-            // Não definir videoError para manter tentando carregar
-          }}
-          onLoadedData={() => {
-            console.log('Vídeo de fundo carregado com sucesso');
-          }}
-          onCanPlay={() => {
-            console.log('Vídeo pode ser reproduzido');
-            if (videoRef.current) {
-              videoRef.current.play().catch(console.warn);
-            }
-          }}
-        >
-          <source src="/Cria_um_video_202512111740.mp4" type="video/mp4" />
-          Seu navegador não suporta vídeos HTML5.
-        </video>
+      {/* Background - Gradiente azul */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#001F3F] via-[#003366] to-[#001F3F]">
         <div className="absolute inset-0 hero-gradient" />
       </div>
 
@@ -397,12 +355,6 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Scroll Indicator - Oculto no mobile e tablet, apenas desktop */}
-      <div className="hidden lg:block absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-float">
-        <div className="w-6 h-10 rounded-full border-2 border-white/50 flex items-start justify-center p-2">
-          <div className="w-1.5 h-3 bg-white/50 rounded-full animate-pulse" />
-        </div>
-      </div>
     </section>
   );
 }
